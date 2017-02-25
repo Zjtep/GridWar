@@ -23,15 +23,22 @@ class Game:
     def new(self):
         # initialize all variables and do all the setup for a new game
         self.all_sprites = pg.sprite.Group()
-        self.walls = pg.sprite.Group()
+        self.wall = pg.sprite.Group()
+        self.water = pg.sprite.Group()
+        self.mountain = pg.sprite.Group()
+        
+        
         for row, tiles in enumerate(self.map_data):
             for col, tile in enumerate(tiles):
                 if tile == '1':
-                    Grass(self, col, row)
+                    Wall(self, col, row)
                 if tile == '2':
-                    self.player = Water(self, col, row)
+                    Water(self, col, row)
                 if tile == '3':
-                    self.player = Mountain(self, col, row)
+                    Mountain(self, col, row)
+                if tile == 'P':
+                    self.player = Player(self, col, row)
+                    
     def run(self):
         # game loop - set self.playing = False to end the game
         self.playing = True
@@ -51,14 +58,15 @@ class Game:
 
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
-            pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
+            pg.draw.line(self.screen, COLOR_RED, (x, 0), (x, HEIGHT))
         for y in range(0, HEIGHT, TILESIZE):
-            pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
+            pg.draw.line(self.screen, COLOR_RED, (0, y), (WIDTH, y))
 
     def draw(self):
         self.screen.fill(BACKGROUND_COLOR)
 #         self.draw_grid()
         self.all_sprites.draw(self.screen)
+        self.draw_grid()
         pg.display.flip()
 
     def events(self):
@@ -69,14 +77,14 @@ class Game:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
-#                 if event.key == pg.K_LEFT:
-#                     self.player.move(dx=-1)
-#                 if event.key == pg.K_RIGHT:
-#                     self.player.move(dx=1)
-#                 if event.key == pg.K_UP:
-#                     self.player.move(dy=-1)
-#                 if event.key == pg.K_DOWN:
-#                     self.player.move(dy=1)
+                if event.key == pg.K_LEFT:
+                    self.player.move(dx=-1)
+                if event.key == pg.K_RIGHT:
+                    self.player.move(dx=1)
+                if event.key == pg.K_UP:
+                    self.player.move(dy=-1)
+                if event.key == pg.K_DOWN:
+                    self.player.move(dy=1)
 
     def show_start_screen(self):
         pass
