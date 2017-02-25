@@ -27,10 +27,11 @@ class Game:
         for row, tiles in enumerate(self.map_data):
             for col, tile in enumerate(tiles):
                 if tile == '1':
-                    Wall(self, col, row)
-                if tile == 'P':
-                    self.player = Player(self, col, row)
-
+                    Grass(self, col, row)
+                if tile == '2':
+                    self.player = Water(self, col, row)
+                if tile == '3':
+                    self.player = Mountain(self, col, row)
     def run(self):
         # game loop - set self.playing = False to end the game
         self.playing = True
