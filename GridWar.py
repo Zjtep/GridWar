@@ -4,6 +4,33 @@ from os import path
 from GameConstants import *
 from Sprites import *
 
+class Cursor_Control(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+#         self.image = pg.Surface((50, 50))
+#         self.image.fill(COLOR_RED)
+      
+        self.image = pg.Surface((TILESIZE,TILESIZE), pg.SRCALPHA, 32)
+        self.image.fill((23, 100, 255, 50))        
+        
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+        
+    def update_position(self,x,y):
+#         print "wtf"
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE     
+        
+        
+#         self.screen.blit(rect, (100,100))
+
 class Game:
     def __init__(self):
         pg.init()
@@ -12,6 +39,10 @@ class Game:
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
         self.load_data()
+        
+        pg.mouse.set_visible(0)
+
+        
 
     def load_data(self):
         game_folder = path.dirname(__file__)
@@ -26,7 +57,7 @@ class Game:
         self.wall = pg.sprite.Group()
         self.water = pg.sprite.Group()
         self.mountain = pg.sprite.Group()
-        
+        self.cursor=Cursor_Control(self, 2,2)
         
         for row, tiles in enumerate(self.map_data):
             for col, tile in enumerate(tiles):
@@ -63,10 +94,21 @@ class Game:
             pg.draw.line(self.screen, COLOR_RED, (0, y), (WIDTH, y))
 
     def draw(self):
+        
+        mousePosition  = pg.mouse.get_pos()
+#         print mousePosition[0]/32
+#         print mousePosition[1]/32
+        self.cursor.update_position(mousePosition[0]/TILESIZE,  mousePosition[1]/TILESIZE )        
+        
         self.screen.fill(BACKGROUND_COLOR)
 #         self.draw_grid()
         self.all_sprites.draw(self.screen)
         self.draw_grid()
+        
+#         cursor_rect = pg.Surface((500,500), pg.SRCALPHA, 32)
+#         cursor_rect.fill((23, 100, 255, 50))
+#         self.screen.blit(cursor_rect, (100,100))
+        
         pg.display.flip()
 
     def events(self):
@@ -85,6 +127,9 @@ class Game:
                     self.player.move(dy=-1)
                 if event.key == pg.K_DOWN:
                     self.player.move(dy=1)
+                    
+
+       
 
     def show_start_screen(self):
         pass
